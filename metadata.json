@@ -1,0 +1,6 @@
+{
+  "name": "Lumina eBook Reader",
+  "description": "A lightweight, modern Windows 10+ ebook reader supporting EPUB and PDF with frosted glass theme, custom typography, offline reading, and cross-device cloud sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
