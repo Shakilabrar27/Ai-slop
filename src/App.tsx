@@ -39,7 +39,6 @@ import { LibraryView } from './components/LibraryView';
 import { ReaderView } from './components/ReaderView';
 import { FrostedThemePanel } from './components/FrostedThemePanel';
 import { CloudSyncModal } from './components/CloudSyncModal';
-import { TableOfContentsModal } from './components/TableOfContentsModal';
 import { BookmarksNotesDrawer } from './components/BookmarksNotesDrawer';
 import { BookSearchModal } from './components/BookSearchModal';
 
@@ -75,7 +74,6 @@ export default function App() {
   // Modals & Panels
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
-  const [isTocOpen, setIsTocOpen] = useState(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -178,7 +176,7 @@ export default function App() {
       ttsReader.stop();
       setIsTTSPlaying(false);
     }
-  }, [activeBook]);
+  }, [activeBook?.id]);
 
   // Update Preferences Handler
   const handleUpdatePreferences = (updated: Partial<ReaderPreferences>) => {
@@ -198,31 +196,46 @@ export default function App() {
   ) => {
     if (!activeBook) return;
 
-    await updateReadingProgressInDB(activeBook.id, chapterIndex, percentage, page, totalPages);
+    const updatedProgress: ReadingProgress = {
+      ...(activeBook.progress || {
+        bookId: activeBook.id,
+        currentChapterIndex: 0,
+        currentPage: 1,
+        totalPages: 1,
+        percentage: 0,
+        lastReadAt: Date.now(),
+        secondsRead: 0,
+      }),
+      bookId: activeBook.id,
+      currentChapterIndex: chapterIndex,
+      currentPage: page,
+      totalPages,
+      percentage,
+      lastReadAt: Date.now(),
+      secondsRead: (activeBook.progress?.secondsRead || 0) + 15,
+    };
+
+    setActiveBook((prev) => (prev ? { ...prev, progress: updatedProgress } : null));
 
     setBooks((prev) =>
       prev.map((b) => {
         if (b.id === activeBook.id) {
-          const updatedProgress: ReadingProgress = {
-            ...b.progress,
-            bookId: b.id,
-            currentChapterIndex: chapterIndex,
-            currentPage: page,
-            totalPages,
-            percentage,
-            lastReadAt: Date.now(),
-            secondsRead: (b.progress?.secondsRead || 0) + 15,
-          };
           return { ...b, progress: updatedProgress };
         }
         return b;
       })
     );
 
+    await updateReadingProgressInDB(activeBook.id, chapterIndex, percentage, page, totalPages);
+
     // Auto-sync progress to cloud payload
     const progressMap: Record<string, ReadingProgress> = {};
     books.forEach((b) => {
-      if (b.progress) progressMap[b.id] = b.progress;
+      if (b.id === activeBook.id) {
+        progressMap[b.id] = updatedProgress;
+      } else if (b.progress) {
+        progressMap[b.id] = b.progress;
+      }
     });
     pushToCloudSync(progressMap, bookmarks, highlights, preferences);
     setLastSyncTime(Date.now());
@@ -561,7 +574,6 @@ export default function App() {
             onUpdateProgress={handleUpdateProgress}
             onAddBookmark={handleAddBookmark}
             onAddHighlight={handleAddHighlight}
-            onOpenTableOfContents={() => setIsTocOpen(true)}
             onOpenBookmarks={() => setIsBookmarksOpen(true)}
             onOpenPreferences={() => setIsPreferencesOpen(true)}
             onOpenSearch={() => setIsSearchOpen(true)}
@@ -590,21 +602,6 @@ export default function App() {
         onImportBackup={handleImportBackup}
         offlineStorageEstimate={storageEstimate}
       />
-
-      {/* 5. Table of Contents Drawer */}
-      {activeBook && (
-        <TableOfContentsModal
-          isOpen={isTocOpen}
-          onClose={() => setIsTocOpen(false)}
-          chapters={activeBook.chapters || []}
-          currentChapterIndex={activeBook.progress?.currentChapterIndex || 0}
-          onSelectChapter={(index) => {
-            const total = activeBook.chapters?.length || 1;
-            const pct = Math.round(((index + 1) / total) * 100);
-            handleUpdateProgress(index, pct, index + 1, total);
-          }}
-        />
-      )}
 
       {/* 6. Bookmarks & Highlights Drawer */}
       {activeBook && (

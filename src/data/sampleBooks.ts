@@ -14,8 +14,8 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
       bookId: 'book-frankenstein',
       currentChapterIndex: 1,
       currentPage: 2,
-      totalPages: 8,
-      percentage: 24,
+      totalPages: 4,
+      percentage: 50,
       lastReadAt: Date.now() - 1000 * 60 * 25,
       secondsRead: 1420,
     },
@@ -90,8 +90,8 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
       bookId: 'book-time-machine',
       currentChapterIndex: 0,
       currentPage: 1,
-      totalPages: 5,
-      percentage: 12,
+      totalPages: 2,
+      percentage: 50,
       lastReadAt: Date.now() - 1000 * 60 * 60 * 5,
       secondsRead: 680,
     },
@@ -139,7 +139,7 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
       currentChapterIndex: 0,
       currentPage: 1,
       totalPages: 4,
-      percentage: 5,
+      percentage: 25,
       lastReadAt: Date.now() - 1000 * 60 * 60 * 24 * 2,
       secondsRead: 320,
     },
@@ -155,6 +155,46 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
           <p class="mb-4">So she was considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her.</p>
           <p class="mb-4">There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, "Oh dear! Oh dear! I shall be late!" But when the Rabbit actually took a watch out of its waistcoat-pocket, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket, or a watch to take out of it, and burning with curiosity, she ran across the field after it, and fortunately was just in time to see it pop down a large rabbit-hole under the hedge.</p>
           <p class="mb-4">In another moment down went Alice after it, never once considering in the world how in the world she was to get out again.</p>
+        `,
+      },
+      {
+        id: 'chap-a-2',
+        title: 'Chapter 2 — The Pool of Tears',
+        pageNumber: 2,
+        wordCount: 1420,
+        content: `
+          <h2 class="text-2xl font-bold mb-4">Chapter II: The Pool of Tears</h2>
+          <p class="mb-4">"Curiouser and curiouser!" cried Alice (she was so much surprised, that for the moment she quite forgot how to speak good English); "now I'm opening out like the largest telescope that ever was! Good-bye, feet!"</p>
+          <p class="mb-4">For when she looked down at her feet, they seemed to be almost out of sight, they were getting so far off. "Oh, my poor little feet, I wonder who will put on your shoes and stockings for you now, dears? I'm sure I shan't be able! I shall be a great deal too far off to trouble myself about you: you must manage the best way you can."</p>
+          <p class="mb-4">Just at this moment her head struck against the roof of the hall: in fact she was now more than nine feet high, and she at once took up the little golden key and hurried off to the garden door.</p>
+          <p class="mb-4">Poor Alice! It was as much as she could do, lying down on one side, to look through into the garden with one eye; but to get through was more hopeless than ever: she sat down and began to cry again.</p>
+        `,
+      },
+      {
+        id: 'chap-a-3',
+        title: 'Chapter 3 — A Caucus-Race and a Long Tale',
+        pageNumber: 3,
+        wordCount: 1280,
+        content: `
+          <h2 class="text-2xl font-bold mb-4">Chapter III: A Caucus-Race and a Long Tale</h2>
+          <p class="mb-4">They were indeed a queer-looking party that assembled on the bank—the birds with draggled feathers, the animals with their fur clinging close to them, and all dripping wet, cross, and uncomfortable.</p>
+          <p class="mb-4">The first question of course was, how to get dry again: they had a consultation about this, and after a few minutes it seemed quite natural to Alice to find herself talking familiarly with them, as if she had known them all her life.</p>
+          <p class="mb-4">"What I was going to say," said the Dodo in an offended tone, "was, that the best thing to get us dry would be a Caucus-race."</p>
+          <p class="mb-4">"What is a Caucus-race?" said Alice; not that she wanted much to know, but the Dodo had paused as if it thought that somebody ought to speak, and no one else seemed inclined to say anything.</p>
+          <p class="mb-4">"Why," said the Dodo, "the best way to explain it is to do it." First it marked out a race-course, in a sort of circle, and then all the party were placed along the course, here and there.</p>
+        `,
+      },
+      {
+        id: 'chap-a-4',
+        title: 'Chapter 4 — The Rabbit Sends in a Little Bill',
+        pageNumber: 4,
+        wordCount: 1510,
+        content: `
+          <h2 class="text-2xl font-bold mb-4">Chapter IV: The Rabbit Sends in a Little Bill</h2>
+          <p class="mb-4">It was the White Rabbit, trotting slowly back again, and looking anxiously about as it went, as if it had lost something; and she heard it muttering to itself "The Duchess! The Duchess! Oh my dear paws! Oh my fur and whiskers! She'll get me executed, as sure as ferrets are ferrets! Where can I have dropped them, I wonder?"</p>
+          <p class="mb-4">Alice guessed in a moment that it was looking for the fan and the pair of white kid gloves, and she very good-naturedly began hunting about for them, but they were nowhere to be seen—everything seemed to have changed since her swim in the pool.</p>
+          <p class="mb-4">Very soon the Rabbit noticed Alice, as she went hunting about, and called out to her in an angry tone, "Why, Mary Ann, what are you doing out here? Run home this moment, and fetch me a pair of gloves and a fan! Quick, now!"</p>
+          <p class="mb-4">And Alice was so much frightened that she ran off at once in the direction it pointed to, without trying to explain the mistake it had made.</p>
         `,
       },
     ],

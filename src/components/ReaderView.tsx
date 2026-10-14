@@ -27,6 +27,7 @@ import {
 import { Book, Bookmark, Chapter, Highlight, ReaderPreferences } from '../types';
 import { PDFViewerEngine } from '../utils/pdfRenderer';
 import { ttsReader } from '../utils/speechSynth';
+import { TableOfContentsModal } from './TableOfContentsModal';
 
 interface ReaderViewProps {
   book: Book;
@@ -37,7 +38,7 @@ interface ReaderViewProps {
   onUpdateProgress: (chapterIndex: number, percentage: number, page?: number, totalPages?: number) => void;
   onAddBookmark: (title: string, excerpt: string, chapterIndex: number, progressPercent: number) => void;
   onAddHighlight: (text: string, color: Highlight['color'], note?: string, chapterIndex?: number) => void;
-  onOpenTableOfContents: () => void;
+  onOpenTableOfContents?: () => void;
   onOpenBookmarks: () => void;
   onOpenPreferences: () => void;
   onOpenSearch: () => void;
@@ -68,6 +69,7 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
   const [totalPages, setTotalPages] = useState(book.progress?.totalPages || (book.chapters ? book.chapters.length : 1));
   const [pdfScale, setPdfScale] = useState(1.2);
   const [isPdfLoading, setIsPdfLoading] = useState(book.format === 'pdf');
+  const [isTocOpen, setIsTocOpen] = useState(false);
 
   // Text selection popup state
   const [selectedText, setSelectedText] = useState('');
@@ -94,6 +96,40 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
       setTotalPages(chapters.length);
     }
   }, [chapters.length]);
+
+  // Sync chapter if external progress changes (e.g. from bookmarks, search, or sync)
+  useEffect(() => {
+    if (
+      typeof book.progress?.currentChapterIndex === 'number' &&
+      book.progress.currentChapterIndex !== currentChapterIndex
+    ) {
+      setCurrentChapterIndex(book.progress.currentChapterIndex);
+      if (contentContainerRef.current) {
+        contentContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }, [book.progress?.currentChapterIndex]);
+
+  useEffect(() => {
+    if (
+      typeof book.progress?.currentPage === 'number' &&
+      book.progress.currentPage !== currentPage
+    ) {
+      setCurrentPage(book.progress.currentPage);
+      if (contentContainerRef.current) {
+        contentContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }, [book.progress?.currentPage]);
+
+  // Reset when active book changes
+  useEffect(() => {
+    setCurrentChapterIndex(book.progress?.currentChapterIndex || 0);
+    setCurrentPage(book.progress?.currentPage || 1);
+    if (contentContainerRef.current) {
+      contentContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [book.id]);
 
   // Load PDF if format is PDF
   useEffect(() => {
@@ -136,13 +172,19 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
 
   // Handle Chapter Navigation
   const goToChapter = (index: number) => {
-    if (index >= 0 && index < totalPages) {
+    const totalChapters = chapters.length > 0 ? chapters.length : totalPages;
+    if (index >= 0 && index < totalChapters) {
       setCurrentChapterIndex(index);
-      const newPercentage = Math.round(((index + 1) / totalPages) * 100);
-      onUpdateProgress(index, newPercentage, index + 1, totalPages);
+      const newPercentage = Math.round(((index + 1) / totalChapters) * 100);
+      onUpdateProgress(index, newPercentage, index + 1, totalChapters);
       if (contentContainerRef.current) {
         contentContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
       }
+      if (isTTSPlaying) {
+        onToggleTTS();
+      }
+    } else if (contentContainerRef.current) {
+      contentContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -515,7 +557,10 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
         {/* Left: Table of Contents & Bookmarks */}
         <div className="flex items-center gap-1">
           <button
-            onClick={onOpenTableOfContents}
+            onClick={() => {
+              setIsTocOpen(true);
+              onOpenTableOfContents?.();
+            }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-white/10 text-slate-200 transition-colors"
             title="Table of Contents"
           >
@@ -599,6 +644,30 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Table of Contents Modal */}
+      <TableOfContentsModal
+        isOpen={isTocOpen}
+        onClose={() => setIsTocOpen(false)}
+        chapters={
+          chapters.length > 0
+            ? chapters
+            : Array.from({ length: totalPages }, (_, i) => ({
+                id: `pdf-page-${i + 1}`,
+                title: `Page ${i + 1}`,
+                pageNumber: i + 1,
+                content: '',
+              }))
+        }
+        currentChapterIndex={book.format === 'pdf' ? currentPage - 1 : currentChapterIndex}
+        onSelectChapter={(index) => {
+          if (book.format === 'pdf') {
+            goToPdfPage(index + 1);
+          } else {
+            goToChapter(index);
+          }
+        }}
+      />
     </div>
   );
 };
