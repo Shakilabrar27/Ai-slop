@@ -14,8 +14,8 @@ export default defineConfig(() => {
         includeAssets: ['icon.svg'],
         manifest: {
           id: '/',
-          name: 'Lumina eBook Reader',
-          short_name: 'Lumina',
+          name: 'Corn Reader',
+          short_name: 'Corn Reader',
           description: 'A lightweight Windows 10+ ebook reader supporting EPUB & PDF with frosted glass theme and cross-device sync.',
           theme_color: '#0f172a',
           background_color: '#020617',

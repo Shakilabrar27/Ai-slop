@@ -170,7 +170,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
             <div className="pt-2 border-t border-white/10 flex gap-2">
               <input
                 type="text"
-                placeholder="Enter Remote Sync Code (e.g. LUMINA-4821)"
+                placeholder="Enter Remote Sync Code (e.g. CORN-4821)"
                 value={newCodeInput}
                 onChange={(e) => setNewCodeInput(e.target.value.toUpperCase())}
                 className="flex-1 bg-slate-950 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-100 placeholder:text-slate-500 uppercase font-mono focus:outline-none focus:border-sky-400"

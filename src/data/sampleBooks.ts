@@ -1,4 +1,10 @@
 import { Book } from '../types';
+import { 
+  FRANKENSTEIN_COVER, 
+  TIME_MACHINE_COVER, 
+  ALICE_COVER, 
+  GUIDE_COVER 
+} from './bookCovers';
 
 export const INITIAL_SAMPLE_BOOKS: Book[] = [
   {
@@ -7,6 +13,9 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
     author: 'Mary Wollstonecraft Shelley',
     description: 'The iconic gothic masterpiece exploring humanity, creation, and consequence through Victor Frankenstein and his creature.',
     format: 'epub',
+    coverUrl: FRANKENSTEIN_COVER,
+    category: 'Classic Literature',
+    tags: ['Gothic', 'Masterpiece', 'Horror', 'Sci-Fi'],
     fileSize: 428000,
     dateAdded: Date.now() - 1000 * 60 * 60 * 24 * 3,
     isOfflineCached: true,
@@ -83,6 +92,9 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
     author: 'H. G. Wells',
     description: 'The groundbreaking pioneer of modern science fiction, journeying into the far distant future of year 802,701 AD.',
     format: 'epub',
+    coverUrl: TIME_MACHINE_COVER,
+    category: 'Sci-Fi',
+    tags: ['Time Travel', 'Classic', 'Adventure'],
     fileSize: 312000,
     dateAdded: Date.now() - 1000 * 60 * 60 * 24 * 7,
     isOfflineCached: true,
@@ -131,6 +143,9 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
     author: 'Lewis Carroll',
     description: 'A whimsical journey down the rabbit hole into a world of curious creatures, tea parties, and nonsensical logic.',
     format: 'epub',
+    coverUrl: ALICE_COVER,
+    category: 'Fantasy',
+    tags: ['Whimsical', 'Classic', 'Children'],
     fileSize: 245000,
     dateAdded: Date.now() - 1000 * 60 * 60 * 24 * 12,
     isOfflineCached: true,
@@ -201,10 +216,13 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
   },
   {
     id: 'book-guide-pdf',
-    title: 'Windows 10 & 11 Lumina Reader Guide',
-    author: 'Lumina Systems',
+    title: 'Windows 10 & 11 Corn Reader Guide',
+    author: 'Corn Reader Systems',
     description: 'Illustrated guide covering Windows shortcuts, Acrylic Frosted Glass settings, offline storage optimization, and cross-device syncing.',
     format: 'pdf',
+    coverUrl: GUIDE_COVER,
+    category: 'Guides',
+    tags: ['Tutorial', 'Offline', 'Documentation'],
     fileSize: 185000,
     dateAdded: Date.now() - 1000 * 60 * 60 * 2,
     isOfflineCached: true,
@@ -225,7 +243,7 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
         wordCount: 300,
         content: `
           <div class="p-4 border border-sky-500/30 rounded-xl bg-sky-950/20 mb-6">
-            <h1 class="text-3xl font-bold text-sky-400 mb-2">Lumina eBook Reader for Windows 10 & 11</h1>
+            <h1 class="text-3xl font-bold text-sky-400 mb-2">Corn Reader for Windows 10 & 11</h1>
             <p class="text-slate-300">Modern, resource-efficient architecture optimized for fluid reading and cross-device synchronization.</p>
           </div>
           <h2 class="text-xl font-semibold mb-3 text-slate-100">Key Features & Architecture:</h2>
@@ -279,7 +297,7 @@ export const INITIAL_SAMPLE_BOOKS: Book[] = [
         wordCount: 310,
         content: `
           <h2 class="text-2xl font-bold mb-4 text-slate-100">Syncing & Offline Cache Management</h2>
-          <p class="mb-4 text-slate-300">Lumina includes an intelligent multi-tier synchronization protocol:</p>
+          <p class="mb-4 text-slate-300">Corn Reader includes an intelligent multi-tier synchronization protocol:</p>
           <ul class="list-disc pl-6 space-y-2 mb-4 text-slate-300">
             <li><strong>Local-First Principle:</strong> All books, annotations, and bookmarks are committed to browser-native IndexedDB first for instant, zero-latency access.</li>
             <li><strong>Device Pairing:</strong> Generate a unique Device Pair Key to sync progress with other computers, Surface tablets, or smartphones without mandatory account registration.</li>

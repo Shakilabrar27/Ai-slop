@@ -74,8 +74,14 @@ export async function parseEpubFile(fileBuffer: ArrayBuffer, fileName: string): 
     const fullCoverPath = resolvePath(opfDir, coverHref);
     const coverFile = zip.file(fullCoverPath) || zip.file(coverHref);
     if (coverFile) {
-      const blob = await coverFile.async('blob');
-      coverUrl = URL.createObjectURL(blob);
+      try {
+        const base64 = await coverFile.async('base64');
+        const mime = manifestItems[coverHref]?.mediaType || 'image/jpeg';
+        coverUrl = `data:${mime};base64,${base64}`;
+      } catch {
+        const blob = await coverFile.async('blob');
+        coverUrl = URL.createObjectURL(blob);
+      }
     }
   }
 

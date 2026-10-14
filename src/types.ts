@@ -53,6 +53,8 @@ export interface Book {
   isOfflineCached: boolean;
   rawBlob?: Blob; // stored in IndexedDB
   pdfDataUrl?: string;
+  category?: string;
+  tags?: string[];
 }
 
 export type ThemeId = 'frosted-glass' | 'oled-black' | 'slate-dark' | 'warm-sepia' | 'paper-white' | 'solarized-amber';

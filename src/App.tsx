@@ -41,6 +41,7 @@ import { FrostedThemePanel } from './components/FrostedThemePanel';
 import { CloudSyncModal } from './components/CloudSyncModal';
 import { BookmarksNotesDrawer } from './components/BookmarksNotesDrawer';
 import { BookSearchModal } from './components/BookSearchModal';
+import { EditBookModal } from './components/EditBookModal';
 
 const DEFAULT_PREFERENCES: ReaderPreferences = {
   theme: 'frosted-glass', // User requested Frosted Glass theme
@@ -76,6 +77,7 @@ export default function App() {
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isReaderEditOpen, setIsReaderEditOpen] = useState(false);
 
   // Sync & Offline State
   const [devices, setDevices] = useState<SyncDevice[]>(getRegisteredDevices());
@@ -115,7 +117,34 @@ export default function App() {
         // Load books
         const storedBooks = await getAllBooksFromDB();
         if (storedBooks.length > 0) {
-          setBooks(storedBooks);
+          // Merge with sample books to ensure covers and metadata are preserved
+          const updatedBooks = storedBooks.map((stored) => {
+            const sample = INITIAL_SAMPLE_BOOKS.find((s) => s.id === stored.id);
+            if (sample) {
+              const merged: Book = {
+                ...sample,
+                ...stored,
+                coverUrl: stored.coverUrl || sample.coverUrl,
+                category: stored.category || sample.category,
+                tags: stored.tags || sample.tags,
+                description: stored.description || sample.description,
+                chapters: (stored.chapters && stored.chapters.length >= (sample.chapters?.length || 0))
+                  ? stored.chapters
+                  : sample.chapters,
+                progress: {
+                  ...sample.progress,
+                  ...stored.progress,
+                  totalPages: sample.chapters ? sample.chapters.length : (stored.progress?.totalPages || sample.progress.totalPages),
+                },
+              };
+              if ((!stored.coverUrl && sample.coverUrl) || (!stored.category && sample.category)) {
+                saveBookToDB(merged).catch(() => {});
+              }
+              return merged;
+            }
+            return stored;
+          });
+          setBooks(updatedBooks);
         } else {
           // Seed sample books into IndexedDB for instantaneous offline readiness
           for (const sb of INITIAL_SAMPLE_BOOKS) {
@@ -434,6 +463,14 @@ export default function App() {
     setBooks((prev) => prev.map((b) => (b.id === book.id ? updated : b)));
   };
 
+  const handleUpdateBook = async (updatedBook: Book) => {
+    await saveBookToDB(updatedBook);
+    setBooks((prev) => prev.map((b) => (b.id === updatedBook.id ? updatedBook : b)));
+    if (activeBook?.id === updatedBook.id) {
+      setActiveBook(updatedBook);
+    }
+  };
+
   // Manual Cloud Sync
   const handleTriggerManualSync = async () => {
     const progressMap: Record<string, ReadingProgress> = {};
@@ -467,7 +504,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `lumina-sync-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `corn-reader-sync-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -528,7 +565,7 @@ export default function App() {
 
   return (
     <div 
-      id="lumina-app"
+      id="corn-reader-app"
       className="flex flex-col h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 select-none font-sans"
     >
       {/* 1. Native Windows 10/11 Fluent Titlebar */}
@@ -558,6 +595,7 @@ export default function App() {
             onImportFile={handleImportFile}
             onDeleteBook={handleDeleteBook}
             onToggleOffline={handleToggleOffline}
+            onUpdateBook={handleUpdateBook}
             isImporting={isImporting}
             importError={importError}
             storageUsage={storageEstimate}
@@ -577,6 +615,7 @@ export default function App() {
             onOpenBookmarks={() => setIsBookmarksOpen(true)}
             onOpenPreferences={() => setIsPreferencesOpen(true)}
             onOpenSearch={() => setIsSearchOpen(true)}
+            onEditBook={() => setIsReaderEditOpen(true)}
             isTTSPlaying={isTTSPlaying}
             onToggleTTS={handleToggleTTS}
           />
@@ -644,6 +683,21 @@ export default function App() {
             const pct = Math.round(((chapterIndex + 1) / total) * 100);
             handleUpdateProgress(chapterIndex, pct, chapterIndex + 1, total);
           }}
+        />
+      )}
+
+      {/* 8. Edit Active Book Modal (when opened from Reader) */}
+      {activeBook && (
+        <EditBookModal
+          isOpen={isReaderEditOpen}
+          book={activeBook}
+          onClose={() => setIsReaderEditOpen(false)}
+          onSave={(updated) => {
+            handleUpdateBook(updated);
+            setIsReaderEditOpen(false);
+          }}
+          existingCategories={Array.from(new Set(books.map((b) => b.category).filter(Boolean) as string[]))}
+          existingTags={Array.from(new Set(books.flatMap((b) => b.tags || []).filter(Boolean)))}
         />
       )}
     </div>

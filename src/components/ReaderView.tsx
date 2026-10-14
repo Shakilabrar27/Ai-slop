@@ -22,7 +22,8 @@ import {
   Clock,
   Columns,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  Edit3
 } from 'lucide-react';
 import { Book, Bookmark, Chapter, Highlight, ReaderPreferences } from '../types';
 import { PDFViewerEngine } from '../utils/pdfRenderer';
@@ -42,6 +43,7 @@ interface ReaderViewProps {
   onOpenBookmarks: () => void;
   onOpenPreferences: () => void;
   onOpenSearch: () => void;
+  onEditBook?: () => void;
   isTTSPlaying: boolean;
   onToggleTTS: () => void;
   ttsHighlightRange?: { start: number; end: number } | null;
@@ -60,6 +62,7 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
   onOpenBookmarks,
   onOpenPreferences,
   onOpenSearch,
+  onEditBook,
   isTTSPlaying,
   onToggleTTS,
   ttsHighlightRange,
@@ -634,6 +637,16 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
           >
             {isTTSPlaying ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
+
+          {onEditBook && (
+            <button
+              onClick={onEditBook}
+              className="p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-sky-300 transition-colors"
+              title="Edit Book Details (Title, Author, Cover, Category, Tags)"
+            >
+              <Edit3 className="w-4 h-4" />
+            </button>
+          )}
 
           <button
             onClick={onOpenPreferences}

@@ -100,28 +100,20 @@ export const WindowsTitleBar: React.FC<WindowsTitleBarProps> = ({
           </button>
         ) : (
           <div className="flex items-center gap-2 pl-1">
-            <img src="/icon.svg" alt="Lumina Icon" className="w-4 h-4 rounded-sm" />
-            <span className="font-semibold text-slate-100 tracking-tight">Lumina Reader</span>
-            <span className="hidden md:inline px-1.5 py-0.2 text-[10px] bg-sky-500/20 text-sky-300 rounded font-mono">Win 11/10</span>
+            <img src="/icon.svg" alt="Corn Reader Icon" className="w-4 h-4 rounded-sm" />
+            <span className="font-semibold text-slate-100 tracking-tight">Corn Reader</span>
           </div>
         )}
 
-        {/* Separator */}
-        <div className="h-3.5 w-px bg-white/15 hidden sm:block" />
-
-        {/* Book Title / Status */}
-        <div className="flex items-center gap-1.5 truncate max-w-[200px] sm:max-w-[320px] md:max-w-[480px]">
-          {isReading && (
-            <span className="text-slate-400 truncate text-[11px]">
+        {/* Book Title when reading */}
+        {isReading && (
+          <>
+            <div className="h-3.5 w-px bg-white/15 hidden sm:block" />
+            <span className="text-slate-400 truncate text-[11px] max-w-[200px] sm:max-w-[320px] md:max-w-[480px]">
               {currentBookTitle || 'Reading Document'}
             </span>
-          )}
-          {!isReading && (
-            <span className="text-slate-400 text-[11px] hidden sm:inline">
-              Windows Fluent eBook Hub
-            </span>
-          )}
-        </div>
+          </>
+        )}
       </div>
 
       {/* Center/Right Actions */}
@@ -198,7 +190,7 @@ export const WindowsTitleBar: React.FC<WindowsTitleBarProps> = ({
           <button
             onClick={install}
             className="flex items-center gap-1 px-2 py-0.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-medium text-[11px] shadow-sm transition-colors"
-            title="Install Lumina Reader to Windows 10/11 Desktop"
+            title="Install Corn Reader"
           >
             <Download className="w-3 h-3" />
             <span className="hidden sm:inline">Install App</span>
@@ -244,7 +236,7 @@ export const WindowsTitleBar: React.FC<WindowsTitleBarProps> = ({
       {isMinimizedNotification && (
         <div className="absolute top-11 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-slate-900/95 border border-sky-500/30 rounded-lg shadow-xl text-slate-200 text-xs backdrop-blur-md animate-in fade-in slide-in-from-top-2">
           <div className="w-2 h-2 rounded-full bg-sky-400 animate-ping" />
-          <span>Lumina is running in active background mode.</span>
+          <span>Corn Reader is running in active background mode.</span>
         </div>
       )}
     </div>

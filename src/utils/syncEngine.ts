@@ -26,7 +26,7 @@ export function getSyncPairingCode(): string {
   let code = localStorage.getItem(SYNC_CODE_KEY);
   if (!code) {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
-    code = `LUMINA-${randomDigits}`;
+    code = `CORN-${randomDigits}`;
     localStorage.setItem(SYNC_CODE_KEY, code);
   }
   return code;
